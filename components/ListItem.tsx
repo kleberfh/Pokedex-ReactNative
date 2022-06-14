@@ -1,8 +1,10 @@
 import Loading from "./Loading";
 import {useEffect, useState} from "react";
+// @ts-ignore
+import CachedImage from 'expo-cached-image';
 import {getPokemon} from "../services/pokeApi";
 import { useNavigation } from "@react-navigation/native";
-import {Image, Pressable, StyleSheet, Text, View} from "react-native";
+import {Pressable, StyleSheet, Text, View} from "react-native";
 
 interface ListItem {
   pokemon: Pokemon,
@@ -51,8 +53,9 @@ export default function ListItem(props: ListItem) {
         </View>
       ) : (
         <Pressable style={styles.pokemon_container} onPress={handlePress}>
-          <Image
+          <CachedImage
             key={pokemon.image}
+            cacheKey={pokemon.name}
             style={styles.pokemon_image}
             source={{ uri: pokemon.image }}
           />

@@ -73,7 +73,7 @@ export default function List() {
             data={pokemons}
             numColumns={2}
             horizontal={false}
-            keyExtractor={item => item.name}
+            keyExtractor={(item: Pokemon) => item.name}
             renderItem={
               ({item}) => <ListItem pokemon={item} />
             }

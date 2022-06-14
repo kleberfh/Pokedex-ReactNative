@@ -18,3 +18,20 @@ export const pokemonTypesColors = {
   steel: '#B8B8D0',
   water: '#6890F0',
 }
+
+export const convertIdToThreeDigits = (id: string) => {
+  if (id.length === 1) {
+    return `00${id}`
+  }
+  if (id.length === 2) {
+    return `0${id}`
+  }
+  return id
+};
+
+export const getFirstPokemonType = (pokemonData: PokemonData): string => {
+  if (pokemonData) {
+    return pokemonData.types[0].type.name;
+  }
+  return 'default';
+}

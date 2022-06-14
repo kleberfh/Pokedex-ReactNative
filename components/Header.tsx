@@ -1,9 +1,17 @@
 import {useState} from "react";
 import {useSetRecoilState} from "recoil";
+// @ts-ignore
+import CachedImage from 'expo-cached-image';
 import {pokemonsAtom} from "../atoms/pokemons";
 import {getPokemons, searchPokemon} from "../services/pokeApi";
-import {Image, StyleSheet, Text, TextInput, View, Animated} from 'react-native';
+import {StyleSheet, Text, TextInput, Animated} from 'react-native';
 
+interface SearchedPokemon {
+  name: string;
+  url: string;
+}
+
+// @ts-ignore
 export default function Header({translateHeader, fadeOut, translateLogo}) {
   const [query, setQuery] = useState('');
   const setPokemons = useSetRecoilState(pokemonsAtom);
@@ -15,7 +23,7 @@ export default function Header({translateHeader, fadeOut, translateLogo}) {
           setPokemons([
             {
               name: response.name,
-              url: `https://pokeapi.co/api/v2/pokemon/${response.id}/`
+              url: response.url,
             }
           ]);
         })
@@ -35,6 +43,7 @@ export default function Header({translateHeader, fadeOut, translateLogo}) {
     }
   }
 
+  // @ts-ignore
   return (
     <Animated.View
       style={[
@@ -49,7 +58,8 @@ export default function Header({translateHeader, fadeOut, translateLogo}) {
       ]}
     >
       <Animated.View style={[styles.logo_container, { transform: [{ translateY: translateLogo }] }]}>
-        <Image
+        <CachedImage
+          cacheKey={"pokeball"}
           style={styles.logo_image}
           source={{ uri: 'https://s2.coinmarketcap.com/static/img/coins/200x200/8303.png'}}
         />

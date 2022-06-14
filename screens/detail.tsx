@@ -1,15 +1,20 @@
-import {View, Text, StyleSheet, Image} from "react-native";
 import {useEffect, useState} from "react";
-import Loading from "../components/Loading";
-import {pokemonTypesColors} from "../utilities/utilities";
+import { AntDesign } from '@expo/vector-icons';
+// @ts-ignore
+import CachedImage from 'expo-cached-image';
+import DetailMenu from "../components/DetailMenu";
+import {useNavigation} from "@react-navigation/native";
 import PokeballLoading from "../components/PokeballLoading";
+import {View, Text, StyleSheet, Pressable} from "react-native";
+import {convertIdToThreeDigits, pokemonTypesColors, getFirstPokemonType} from "../utilities/utilities";
 
 // @ts-ignore
 export default function Detail({ route }) {
+  const navigation = useNavigation();
   const pokemon = route.params.pokemon;
 
   const [loading, setLoading] = useState(true);
-  const [pokemonData, setPokemonData] = useState(null);
+  const [pokemonData, setPokemonData] = useState(null as PokemonData | null);
 
   const getPokemon = async () => {
     const response = await fetch(pokemon.url);
@@ -17,6 +22,10 @@ export default function Detail({ route }) {
     setPokemonData(data);
     setLoading(false);
   }
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   useEffect(() => {
     getPokemon();
@@ -31,18 +40,30 @@ export default function Detail({ route }) {
   }
 
   return (
-    <View style={[styles.container, {backgroundColor: pokemonTypesColors[pokemonData.types[0].type.name]}]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: pokemonTypesColors[getFirstPokemonType(pokemonData)] }
+      ]}
+    >
       <View style={styles.headerContainer}>
         <View style={styles.nameRow}>
+          <Pressable
+            onPress={handleGoBack}
+            style={styles.backContainer}
+          >
+            {/* @ts-ignore */}
+            <AntDesign name="arrowleft" size={32} color="#FFF" />
+            <Text style={styles.name}>
+              {`${pokemon.name.charAt(0).toUpperCase()}${pokemon.name.slice(1)}`}
+            </Text>
+          </Pressable>
           <Text style={styles.name}>
-            {`${pokemon.name.charAt(0).toUpperCase()}${pokemon.name.slice(1)}`}
-          </Text>
-          <Text style={styles.name}>
-            {`#${pokemon.id}`}
+            {`#${convertIdToThreeDigits(pokemon.id.toString())}`}
           </Text>
         </View>
         <View style={styles.typeRow}>
-          {pokemonData?.types.map((type, index) => (
+          {pokemonData?.types.map((type: PokemonTypes, index: number) => (
             <View style={styles.typeContainer} key={index}>
               <Text style={styles.type}>
                 {`${type.type.name.charAt(0).toUpperCase()}${type.type.name.slice(1)}`}
@@ -52,11 +73,21 @@ export default function Detail({ route }) {
         </View>
       </View>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: 'https://icon-library.com/images/pokeball-icon-png/pokeball-icon-png-12.jpg'}} style={styles.icon} />
-        <Image source={{ uri: pokemon.image }} style={styles.image} />
+        <CachedImage
+          style={styles.icon}
+          cacheKey={"pokeball-icon"}
+          source={{ uri: 'https://icon-library.com/images/pokeball-icon-png/pokeball-icon-png-12.jpg'}}
+        />
+        <CachedImage
+          style={styles.image}
+          cacheKey={pokemon.name}
+          source={{ uri: pokemon.image }}
+        />
       </View>
       <View style={styles.detailContainer}>
-
+        <DetailMenu
+          pokemon={pokemonData}
+        />
       </View>
     </View>
   );
@@ -90,6 +121,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 36,
     color: '#FFF',
+    marginLeft: 10,
     fontWeight: 'bold',
   },
   typeRow: {
@@ -133,9 +165,17 @@ const styles = StyleSheet.create({
     width: 320,
     height: 320,
   },
+  backContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   detailContainer: {
     flex: 1,
     display: 'flex',
+    paddingTop: 60,
+    paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: '#fff',
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
