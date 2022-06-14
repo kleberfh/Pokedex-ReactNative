@@ -1,13 +1,16 @@
-import {Image, StyleSheet, Text, View} from "react-native";
-import {useEffect, useState} from "react";
 import Loading from "./Loading";
+import {useEffect, useState} from "react";
 import {getPokemon} from "../services/pokeApi";
+import { useNavigation } from "@react-navigation/native";
+import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 
 interface ListItem {
   pokemon: Pokemon,
 }
 
 export default function ListItem(props: ListItem) {
+  const navigation = useNavigation();
+
   const [pokemon, setPokemon] = useState(props.pokemon);
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +33,13 @@ export default function ListItem(props: ListItem) {
       });
   }, []);
 
+  const handlePress = () => {
+    // @ts-ignore
+    navigation.navigate("Detail", {
+      pokemon: pokemon
+    });
+  }
+
   return (
     <View style={styles.container} key={name}>
       {loading ? (
@@ -40,7 +50,7 @@ export default function ListItem(props: ListItem) {
           />
         </View>
       ) : (
-        <View style={styles.pokemon_container}>
+        <Pressable style={styles.pokemon_container} onPress={handlePress}>
           <Image
             key={pokemon.image}
             style={styles.pokemon_image}
@@ -49,7 +59,7 @@ export default function ListItem(props: ListItem) {
           <Text style={styles.pokemon_name}>
             {name}
           </Text>
-        </View>
+        </Pressable>
       )}
     </View>
   );

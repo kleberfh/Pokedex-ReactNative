@@ -1,20 +1,14 @@
 import {RecoilRoot} from "recoil";
-import List from "./components/List";
-import { StyleSheet, View } from 'react-native';
+import Router from "./router/router";
+import {NavigationContainer} from "@react-navigation/native";
 
 export default function App() {
   return (
     <RecoilRoot>
-      <View style={styles.container}>
-        <List />
-      </View>
+      {/* @ts-ignore */}
+      <NavigationContainer initialRouteName="Home">
+        <Router />
+      </NavigationContainer>
     </RecoilRoot>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
