@@ -1,5 +1,4 @@
 import {View, StyleSheet, Text} from "react-native";
-import About from "../screens/about";
 import Moves from "../screens/moves";
 import BaseStats from "../screens/baseStats";
 import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
@@ -7,8 +6,8 @@ import {getFirstPokemonType, pokemonTypesColors} from "../utilities/utilities";
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function DetailMenu(props: { pokemon: PokemonData; }) {
-  const pokemon: PokemonData = props.pokemon;
+export default function DetailMenu(props: { pokemon: PokemonData | null; }) {
+  const pokemon: PokemonData | null = props.pokemon;
 
   const getPokemonTypeColor = () => {
     return pokemonTypesColors[getFirstPokemonType(pokemon)];
@@ -25,23 +24,13 @@ export default function DetailMenu(props: { pokemon: PokemonData; }) {
           }
         }}
       >
-        <Tab.Screen name="About">
+        <Tab.Screen name="BaseStats">
           {/* @ts-ignore */}
-          {props => <About
-            {...props}
-          />}
+          {props => <BaseStats pokemon={pokemon} {...props} />}
         </Tab.Screen>
         <Tab.Screen name="Moves">
           {/* @ts-ignore */}
-          {props => <Moves
-            {...props}
-          />}
-        </Tab.Screen>
-        <Tab.Screen name="BaseStats">
-          {/* @ts-ignore */}
-          {props => <BaseStats
-            {...props}
-          />}
+          {props => <Moves pokemon={pokemon} {...props} />}
         </Tab.Screen>
       </Tab.Navigator>
     </View>
