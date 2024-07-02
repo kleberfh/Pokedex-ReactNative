@@ -4,7 +4,7 @@
 
 ### Made with React Native and Typescript
 
-This project was deisgned by Kleber Fernando (with some expirations) for study typescript interfaces and React Native animations.
+This project was deisgned by Kleber Fernando (with some inspirations) for study typescript interfaces and React Native animations.
 
 ## Features:
 - Animated header search bar
